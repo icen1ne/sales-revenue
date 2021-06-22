@@ -1,12 +1,15 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+from PIL import Image
 
 #use the whole screen
 st.set_page_config(layout="wide")
-st.title('马力科技销售部营收统计小工具')
+st.title('销售营收统计小工具')
+#顶头背景图
+image = Image.open('logo.png')
 interest_option = st.sidebar.radio("请选择计算利息的方案：", ['固定利率','阶梯式利率'])
-st.subheader('工具使用方法：选择条件，实时统计销售营收。')
+st.subheader('使用方法：选择合适条件，实时统计销售营收。')
 
 @st.cache(suppress_st_warning=True)
 def total_revenue(income,currency,tons,days,interest_opt,
@@ -86,15 +89,15 @@ if interest_option == '固定利率':
     st.markdown('> 年利率默认8.4%；清关代理费默认280元/每吨；操作费默认70元/每吨；关税默认8%；增值税默认9%；从量关税默认0%。')
     try:
         # Attempt a layout with beta_expander
-        layout = st.beta_expander('选择特定的条件：', expanded=True)
+        layout = st.beta_expander('营收统计：', expanded=True)
         # Add a header
         with layout:
             # Add another container
             left, middle, right = st.beta_columns((1, 1, 2))
 
             with left:
-                income = st.number_input('每吨货值(美元)：',1)
-                currency = st.number_input('汇率：')
+                income = st.number_input('每吨货值(美元)：',0,10000,3500)
+                currency = st.number_input('汇率：',5.0,7.5,6.45)
                 tons = st.slider('吨数：',1,100,27,1)
                 days = st.slider('天数：',1,150,60,1)
                 interest_opt = 1
@@ -113,7 +116,8 @@ if interest_option == '固定利率':
 
             with right:
                 #营收统计
-                st.markdown("<h2 style='text-align: center; color: black;'>营收统计</h1>", unsafe_allow_html=True)
+                #st.markdown("<h2 style='text-align: center; color: black;'>营收统计</h1>", unsafe_allow_html=True)
+                st.image(image,clamp=True)
                 st.markdown("* 清关代理费操作费合计："+"￥"+str(custom_operation))
                 st.markdown("* 平均每吨清关代理费用："+"￥"+str(round(custom_operation/tons,2)))
                 st.markdown("")
@@ -129,7 +133,7 @@ if interest_option == '固定利率':
 elif interest_option == '阶梯式利率':
     try:
         st.markdown('> 清关代理费默认280元/每吨；操作费默认70元/每吨；关税默认8%；增值税默认9%；从量关税默认0%。')
-        st.markdown('> 备注：阶梯式年利率，第一个月7.2%；第二个月8.4%；第三个月9.6%。')
+        st.text('备注：阶梯式年利率，第一个月7.2%；第二个月8.4%；第三个月9.6%。')
         # Attempt a layout with beta_expander
         layout = st.beta_expander('输入特定的条件：', expanded=True)
         # Add a header
@@ -138,8 +142,8 @@ elif interest_option == '阶梯式利率':
             left, middle, right = st.beta_columns((1, 1, 2))
 
             with left:
-                income = st.number_input('每吨货值(美元)：',1)
-                currency = st.number_input('汇率：',6.0)
+                income = st.number_input('每吨货值(美元)：',0,10000,3500)
+                currency = st.number_input('汇率：',5.0,7.5,6.45)
                 tons = st.slider('吨数：',1,100,27,1)
                 days = st.slider('天数：',1,150,60,1)
 
@@ -158,7 +162,8 @@ elif interest_option == '阶梯式利率':
 
             with right:
                 #营收统计
-                st.markdown("<h2 style='text-align: center; color: black;'>营收统计</h1>", unsafe_allow_html=True)
+                #st.markdown("<h2 style='text-align: center; color: black;'>营收统计</h1>", unsafe_allow_html=True)
+                st.image(image,clamp=True)
                 st.markdown("* 清关代理费操作费合计："+"￥"+str(custom_operation))
                 st.markdown("* 平均每吨清关代理费用："+"￥"+str(round(custom_operation/tons,2)))
                 st.markdown("")
